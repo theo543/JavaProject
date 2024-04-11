@@ -3,11 +3,11 @@ package model;
 public abstract class Grade {
     private final long timestamp;
     private final Student student;
-    private final Course course;
-    public Grade(Student student, Course course) {
+    private final Exam exam;
+    public Grade(Student student, Exam exam) {
         this.timestamp = System.currentTimeMillis();
         this.student = student;
-        this.course = course;
+        this.exam = exam;
     }
     public long getTimestamp() {
         return timestamp;
@@ -15,8 +15,8 @@ public abstract class Grade {
     public Student getStudent() {
         return student;
     }
-    public Course getCourse() {
-        return course;
+    public Exam getExam() {
+        return exam;
     }
     abstract public double getGrade();
     abstract public String toString();

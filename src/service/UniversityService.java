@@ -57,21 +57,29 @@ public class UniversityService {
     }
     public void addExamToCourse(Course course, String examName) {
         Exam exam = new Exam(examName, course);
+        course.recordExam(exam);
         schoolRepository.addExam(exam);
     }
     public void addGrade(Grade grade) {
         gradeBook.addGrade(grade);
+        grade.getExam().getCourse().recordGrade(grade);
+        grade.getExam().recordGrade(grade);
     }
-    public void addGeneralGrade(Student student, Course course, int grade) {
-        Grade generalGrade = new GeneralGrade(student, course, grade);
+    public void addGeneralGrade(Student student, Exam exam, int grade) {
+        Grade generalGrade = new GeneralGrade(student, exam, grade);
         addGrade(generalGrade);
     }
-    public void addFail(Student student, Course course, FailCause cause) {
-        Grade failGrade = new FailGrade(student, course, cause);
+    public void addFail(Student student, Exam exam, FailCause cause) {
+        Grade failGrade = new FailGrade(student, exam, cause);
         addGrade(failGrade);
     }
     public List<Grade> getStudentGrades(Student student, Course course) {
         return gradeBook.lookupGrades(student, course);
     }
-    // TODO exam stats, course stats
+    public CourseStats getCourseStats(Course course) {
+        return course.getStats();
+    }
+    public ExamStats getExamStats(Exam exam) {
+        return exam.getStats();
+    }
 }

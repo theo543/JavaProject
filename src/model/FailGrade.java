@@ -5,8 +5,8 @@ package model;
 */
 public class FailGrade extends Grade {
     private final FailCause cause;
-    public FailGrade(Student student, Course course, FailCause cause) {
-        super(student, course);
+    public FailGrade(Student student, Exam exam, FailCause cause) {
+        super(student, exam);
         this.cause = cause;
     }
 
