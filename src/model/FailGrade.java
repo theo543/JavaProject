@@ -4,13 +4,6 @@ package model;
     Unconditional failure due to exceptional issues, which cause immediate failure.
 */
 public class FailGrade extends Grade {
-    public enum FailCause {
-        ABSENCE,
-        CHEATING,
-        DISRUPTION,
-        VIOLENCE,
-        OTHER
-    }
     private final FailCause cause;
     public FailGrade(Student student, Course course, FailCause cause) {
         super(student, course);

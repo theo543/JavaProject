@@ -4,8 +4,7 @@ import model.Course;
 import model.Exam;
 import model.Classroom;
 
-import repository.LookupUtility;
-
+import java.util.List;
 import java.util.Objects;
 
 // Stores data about the school's affairs: courses, exams, classrooms
@@ -55,5 +54,14 @@ public class SchoolRepository {
         System.arraycopy(classrooms, 0, newClassrooms, 0, classrooms.length);
         newClassrooms[classrooms.length] = classroom;
         classrooms = newClassrooms;
+    }
+    public List<Course> getAllCourses() {
+        return List.of(courses);
+    }
+    public List<Exam> getAllExams() {
+        return List.of(exams);
+    }
+    public List<Classroom> getAllClassrooms() {
+        return List.of(classrooms);
     }
 }

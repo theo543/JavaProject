@@ -5,7 +5,10 @@ public class GeneralGrade extends Grade {
     public GeneralGrade(Student student, Course course, double grade) {
         super(student, course);
         if (grade < 0 || grade > 10) {
-            throw new IllegalArgumentException("Grades are between 0 and 10");
+            throw new IllegalArgumentException("Grades are between 1 and 10.");
+        }
+        if(grade < 1) {
+            throw new IllegalArgumentException("Only FailGrades can be 0/10.");
         }
         this.grade = grade;
     }

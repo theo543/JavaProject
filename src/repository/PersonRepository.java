@@ -4,8 +4,7 @@ import model.Person;
 import model.Student;
 import model.Teacher;
 
-import repository.LookupUtility;
-
+import java.util.List;
 import java.util.Objects;
 
 public class PersonRepository {
@@ -15,6 +14,12 @@ public class PersonRepository {
     }
     public Student getStudent(String name) {
         return LookupUtility.findByNameInMixedArray(name, persons, Student::getName, Student.class);
+    }
+    public List<Student> getAllStudents() {
+        return LookupUtility.findAllInMixedArray(persons, Student.class);
+    }
+    public List<Teacher> getAllTeachers() {
+        return LookupUtility.findAllInMixedArray(persons, Teacher.class);
     }
     public Teacher getTeacher(String name) {
         return LookupUtility.findByNameInMixedArray(name, persons, Teacher::getName, Teacher.class);
