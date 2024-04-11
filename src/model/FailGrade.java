@@ -12,7 +12,8 @@ public class FailGrade extends Grade {
         OTHER
     }
     private final FailCause cause;
-    public FailGrade(FailCause cause) {
+    public FailGrade(Student student, Course course, FailCause cause) {
+        super(student, course);
         this.cause = cause;
     }
 

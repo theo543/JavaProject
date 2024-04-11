@@ -2,7 +2,8 @@ package model;
 
 public class GeneralGrade extends Grade {
     private final double grade;
-    public GeneralGrade(double grade) {
+    public GeneralGrade(Student student, Course course, double grade) {
+        super(student, course);
         if (grade < 0 || grade > 10) {
             throw new IllegalArgumentException("Grades are between 0 and 10");
         }

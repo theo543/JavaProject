@@ -2,8 +2,11 @@ package model;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Random;
 
 public class Student extends Person {
+    // Used in grades, since name can change
+    private final long studentUID;
     private String emergencyPhoneContact;
     // Grant is optional
     private Grant grant;
@@ -11,6 +14,7 @@ public class Student extends Person {
         super(name, birthDay);
         this.emergencyPhoneContact = Objects.requireNonNull(emergencyPhoneContact);
         this.grant = grant;
+        this.studentUID = new Random().nextLong();
     }
     public Student(String name, Date birthDay, String emergencyPhoneContact) {
         this(name, birthDay, emergencyPhoneContact, null);
@@ -26,6 +30,9 @@ public class Student extends Person {
     }
     public Grant getGrant() {
         return grant;
+    }
+    public long getUID() {
+        return studentUID;
     }
     @Override
     public String toString() {
