@@ -20,6 +20,8 @@ public class GeneralGrade extends Grade {
 
     @Override
     public String toString() {
-        return "Grade: " + grade + " / 10";
+        return "Grade: " + grade + " / 10" +
+                ", course: " + getExam().getCourse().getName() +
+                ", exam: " + getExam().getName();
     }
 }

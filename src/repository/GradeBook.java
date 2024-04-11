@@ -15,12 +15,12 @@ public class GradeBook {
     }
     public void addGrade(Grade grade) {
         Student student = grade.getStudent();
-        Course course = grade.getCourse();
+        Course course = grade.getExam().getCourse();
         int insertionIndex;
-        for (insertionIndex = 0; insertionIndex <= grades.length; insertionIndex++) {
+        for (insertionIndex = 0; insertionIndex < grades.length; insertionIndex++) {
             Grade nextGrade = grades[insertionIndex];
             Student nextStudent = nextGrade.getStudent();
-            Course nextCourse = nextGrade.getCourse();
+            Course nextCourse = nextGrade.getExam().getCourse();
             if (student.getUID() < nextStudent.getUID()) {
                 break;
             }
@@ -44,13 +44,35 @@ public class GradeBook {
         System.arraycopy(grades, insertionIndex, newGrades, insertionIndex + 1, grades.length - insertionIndex);
         grades = newGrades;
     }
+    // Null course means all courses
     public List<Grade> lookupGrades(Student student, Course course) {
-        List<Grade> studentGrades = new ArrayList<>();
-        for (Grade grade : grades) {
-            if (grade.getStudent().getUID() == student.getUID() && grade.getCourse().getName().equals(course.getName())) {
-                studentGrades.add(grade);
+        int begin, end;
+        boolean found = false;
+        for (begin = 0; begin < grades.length; begin++) {
+            Grade grade = grades[begin];
+            if (grade.getStudent().getUID() == student.getUID() && (course == null || grade.getExam().getCourse().getName().equals(course.getName()))) {
+                found = true;
+                break;
             }
         }
-        return studentGrades;
+        if (!found) {
+            return new ArrayList<>();
+        }
+        for (end = begin; end <= grades.length; end++) {
+            if (end == grades.length) {
+                break;
+            }
+            Grade grade = grades[end];
+            if (grade.getStudent().getUID() != student.getUID() && (course == null || !grade.getExam().getCourse().getName().equals(course.getName()))) {
+                break;
+            }
+        }
+        int len = end - begin;
+        Grade[] result = new Grade[len];
+        System.arraycopy(grades, begin, result, 0, len);
+        return List.of(result);
+    }
+    public List<Grade> lookupGrades(Student student) {
+        return lookupGrades(student, null);
     }
 }

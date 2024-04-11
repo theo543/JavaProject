@@ -76,10 +76,17 @@ public class UniversityService {
     public List<Grade> getStudentGrades(Student student, Course course) {
         return gradeBook.lookupGrades(student, course);
     }
+    public List<Grade> getStudentGrades(Student student) {
+        return gradeBook.lookupGrades(student);
+    }
     public CourseStats getCourseStats(Course course) {
         return course.getStats();
     }
     public ExamStats getExamStats(Exam exam) {
         return exam.getStats();
+    }
+
+    public List<Exam> getAllExams() {
+        return schoolRepository.getAllExams();
     }
 }

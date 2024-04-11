@@ -17,6 +17,9 @@ public class FailGrade extends Grade {
 
     @Override
     public String toString() {
-        return "Unconditional failure due to " + cause;
+        return "Unconditional failure due to " + cause +
+                ", course: " + getExam().getCourse().getName() +
+                ", exam: " + getExam().getName() +
+                " (considered as 0/10)";
     }
 }
