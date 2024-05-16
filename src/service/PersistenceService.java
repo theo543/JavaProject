@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PersistenceService {
-    private DatabaseConnectionService connector;
+    private final DatabaseConnectionService connector;
     private Connection connection;
     private final IdentityHashMap<Object, Integer> primaryKeyMap;
     private final Map<Integer, Object> reversePrimaryKeyMap;

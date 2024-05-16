@@ -11,7 +11,6 @@ import java.util.*;
 
 public class UniversityManagementRunner {
     private static class NoChoicesException extends IllegalArgumentException {
-        private String choice;
         public NoChoicesException(String choice) {
             super("No choices available for '" + choice + "' prompt.");
         }
