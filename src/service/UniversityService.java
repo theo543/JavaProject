@@ -60,12 +60,18 @@ public class UniversityService {
         course.recordExam(exam);
         schoolRepository.addExam(exam);
     }
+    public void addExamNoRecord(Exam exam) {
+        schoolRepository.addExam(exam);
+    }
+    public void addGradeNoRecord(Grade grade) {
+        gradeBook.addGrade(grade);
+    }
     public void addGrade(Grade grade) {
         gradeBook.addGrade(grade);
         grade.getExam().getCourse().recordGrade(grade);
         grade.getExam().recordGrade(grade);
     }
-    public void addGeneralGrade(Student student, Exam exam, int grade) {
+    public void addGeneralGrade(Student student, Exam exam, double grade) {
         Grade generalGrade = new GeneralGrade(student, exam, grade);
         addGrade(generalGrade);
     }

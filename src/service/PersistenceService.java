@@ -131,11 +131,11 @@ public class PersistenceService {
             s.execute("CREATE TABLE grants (id INT PRIMARY KEY, description TEXT, amount INT)");
             s.execute("CREATE TABLE students (id INT PRIMARY KEY, name TEXT, birth_day DATE, emergency_phone_contact TEXT, grant INT)");
             s.execute("CREATE TABLE teachers (id INT PRIMARY KEY, name TEXT, birth_day DATE, salary INT)");
-            s.execute("CREATE TABLE fail_grades (id INT PRIMARY KEY, student INT, course INT, grade TEXT)");
-            s.execute("CREATE TABLE general_grades (id INT PRIMARY KEY, student INT, course INT, grade INT)");
-            s.execute("CREATE TABLE classrooms (id INT PRIMARY KEY, room_id TEXT, capacity INT, safety_inspection DATE)");
+            s.execute("CREATE TABLE fail_grades (id INT PRIMARY KEY, student INT, exam INT, grade TEXT)");
+            s.execute("CREATE TABLE general_grades (id INT PRIMARY KEY, student INT, exam INT, grade INT)");
+            s.execute("CREATE TABLE classrooms (id INT PRIMARY KEY, room_id TEXT, capacity INT, safety_inspection_date DATE)");
             s.execute("CREATE TABLE courses (id INT PRIMARY KEY, name TEXT, teacher INT, classroom INT, grade_sum INT, grade_count INT, fail_count INT, exam_count INT)");
-            s.execute("CREATE TABLE exams (id INT PRIMARY KEY, name TEXT, course INT, total_grades INT, grades_sum INT, fails INT)");
+            s.execute("CREATE TABLE exams (id INT PRIMARY KEY, name TEXT, course INT, grade_count INT, grade_sum INT, fail_count INT)");
         }
     }
     public void saveGrant(Grant grant) throws SQLException {
@@ -153,11 +153,11 @@ public class PersistenceService {
     }
     public void saveFailGrade(FailGrade failGrade) throws SQLException {
         addObj(failGrade);
-        exec("INSERT INTO fail_grades (id, student, course, grade) VALUES (?, ?, ?, ?)", getKey(failGrade), getKey(failGrade.getStudent()), getKey(failGrade.getExam()), failGrade.getCause().toString());
+        exec("INSERT INTO fail_grades (id, student, exam, grade) VALUES (?, ?, ?, ?)", getKey(failGrade), getKey(failGrade.getStudent()), getKey(failGrade.getExam()), failGrade.getCause().toString());
     }
     public void saveGeneralGrade(GeneralGrade generalGrade) throws SQLException {
         addObj(generalGrade);
-        exec("INSERT INTO general_grades (id, student, course, grade) VALUES (?, ?, ?, ?)", getKey(generalGrade), getKey(generalGrade.getStudent()), getKey(generalGrade.getExam()), generalGrade.getGrade());
+        exec("INSERT INTO general_grades (id, student, exam, grade) VALUES (?, ?, ?, ?)", getKey(generalGrade), getKey(generalGrade.getStudent()), getKey(generalGrade.getExam()), generalGrade.getGrade());
     }
     public void saveGrade(Grade grade) throws SQLException {
         if (grade instanceof FailGrade) {
@@ -170,7 +170,7 @@ public class PersistenceService {
     }
     public void saveClassroom(Classroom classroom) throws SQLException {
         addObj(classroom);
-        exec("INSERT INTO classrooms (id, room_id, capacity) VALUES (?, ?, ?, ?)", getKey(classroom), classroom.getRoomId(), classroom.getCapacity(), classroom.getSafetyInspection());
+        exec("INSERT INTO classrooms (id, room_id, capacity, safety_inspection_date) VALUES (?, ?, ?, ?)", getKey(classroom), classroom.getRoomId(), classroom.getCapacity(), classroom.getSafetyInspection());
     }
     public void saveCourse(Course course) throws SQLException {
         addObj(course);
@@ -179,7 +179,7 @@ public class PersistenceService {
     }
     public void saveExam(Exam exam) throws SQLException {
         addObj(exam);
-        exec("INSERT INTO exams (id, name, course) VALUES (?, ?, ?, ?, ?, ?)", getKey(exam), exam.getName(), getKey(exam.getCourse()), exam.getTotalGrades(), exam.getGradesSum(), exam.getFails());
+        exec("INSERT INTO exams (id, name, course, grade_sum, grade_count, fail_count) VALUES (?, ?, ?, ?, ?, ?)", getKey(exam), exam.getName(), getKey(exam.getCourse()), exam.getGradesSum(), exam.getTotalGrades(), exam.getFails());
     }
     public List<Grant> loadGrants() throws SQLException {
         return addingQuery("SELECT id, description, amount FROM grants", rs -> new Grant(rs.getInt("amount"), rs.getString("description")));
@@ -194,21 +194,21 @@ public class PersistenceService {
         return addingQuery("SELECT id, name, birth_day, salary FROM teachers", rs -> new Teacher(rs.getString("name"), rs.getDate("birth_day"), rs.getInt("salary")));
     }
     public List<FailGrade> loadFailGrades() throws SQLException {
-        return addingQuery("SELECT id, student, course, grade FROM fail_grades", rs -> {
+        return addingQuery("SELECT id, student, exam, grade FROM fail_grades", rs -> {
             Student student = (Student) getObj(rs.getInt("student"));
-            Exam exam = (Exam) getObj(rs.getInt("course"));
+            Exam exam = (Exam) getObj(rs.getInt("exam"));
             return new FailGrade(student, exam, FailCause.valueOf(rs.getString("grade")));
         });
     }
     public List<GeneralGrade> loadGeneralGrades() throws SQLException {
-        return addingQuery("SELECT id, student, course, grade FROM general_grades", rs -> {
+        return addingQuery("SELECT id, student, exam, grade FROM general_grades", rs -> {
             Student student = (Student) getObj(rs.getInt("student"));
-            Exam exam = (Exam) getObj(rs.getInt("course"));
+            Exam exam = (Exam) getObj(rs.getInt("exam"));
             return new GeneralGrade(student, exam, rs.getInt("grade"));
         });
     }
     public List<Classroom> loadClassrooms() throws SQLException {
-        return addingQuery("SELECT id, room_id, capacity, safety_inspection FROM classrooms", rs -> new Classroom(rs.getString("room_id"), rs.getInt("capacity"), rs.getDate("safety_inspection")));
+        return addingQuery("SELECT id, room_id, capacity, safety_inspection_date FROM classrooms", rs -> new Classroom(rs.getString("room_id"), rs.getInt("capacity"), rs.getDate("safety_inspection_date")));
     }
     public List<Course> loadCourses() throws SQLException {
         return addingQuery("SELECT id, name, teacher, classroom, grade_sum, grade_count, fail_count, exam_count FROM courses", rs -> {
@@ -218,9 +218,9 @@ public class PersistenceService {
         });
     }
     public List<Exam> loadExams() throws SQLException {
-        return addingQuery("SELECT id, name, course, total_grades, grades_sum, fails FROM exams", rs -> {
+        return addingQuery("SELECT id, name, course, grade_count, grade_sum, fail_count FROM exams", rs -> {
             Course course = (Course) getObj(rs.getInt("course"));
-            return new Exam(rs.getString("name"), course, rs.getInt("total_grades"), rs.getInt("grades_sum"), rs.getInt("fails"));
+            return new Exam(rs.getString("name"), course, rs.getInt("grade_count"), rs.getInt("grade_sum"), rs.getInt("fail_count"));
         });
     }
 }

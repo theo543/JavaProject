@@ -273,9 +273,6 @@ public class UniversityManagementRunner {
             for (Teacher teacher : uniService.getAllTeachers()) {
                 persistenceService.saveTeacher(teacher);
             }
-            for (Grade grade : uniService.getAllGrades()) {
-                persistenceService.saveGrade(grade);
-            }
             for (Classroom classroom : uniService.getAllClassrooms()) {
                 persistenceService.saveClassroom(classroom);
             }
@@ -284,6 +281,9 @@ public class UniversityManagementRunner {
             }
             for (Exam exam : uniService.getAllExams()) {
                 persistenceService.saveExam(exam);
+            }
+            for (Grade grade : uniService.getAllGrades()) {
+                persistenceService.saveGrade(grade);
             }
             persistenceService.endSession();
         } catch (SQLException e) {
@@ -310,9 +310,6 @@ public class UniversityManagementRunner {
             for (Teacher teacher : persistenceService.loadTeachers()) {
                 uniService.addTeacher(teacher);
             }
-            for (FailGrade grade : persistenceService.loadFailGrades()) {
-                uniService.addFail(grade.getStudent(), grade.getExam(), grade.getCause());
-            }
             for (Classroom classroom : persistenceService.loadClassrooms()) {
                 uniService.addClassroom(classroom);
             }
@@ -320,7 +317,13 @@ public class UniversityManagementRunner {
                 uniService.addCourse(course);
             }
             for (Exam exam : persistenceService.loadExams()) {
-                uniService.addExamToCourse(exam.getCourse(), exam.getName());
+                uniService.addExamNoRecord(exam);
+            }
+            for (FailGrade grade : persistenceService.loadFailGrades()) {
+                uniService.addGradeNoRecord(grade);
+            }
+            for (GeneralGrade grade : persistenceService.loadGeneralGrades()) {
+                uniService.addGradeNoRecord(grade);
             }
             persistenceService.endSession();
         } catch (SQLException | ClassCastException e) {
