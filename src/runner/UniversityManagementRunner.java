@@ -2,6 +2,7 @@ package runner;
 
 import model.*;
 
+import service.AuditService;
 import service.PersistenceService;
 import service.ScannerService;
 import service.UniversityService;
@@ -50,6 +51,7 @@ public class UniversityManagementRunner {
             if (choice.action() == null) {
                 break;
             }
+            AuditService.getInstance().log(choice.name());
             try {
                 choice.action().run();
             } catch (NoChoicesException e) {

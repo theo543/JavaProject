@@ -13,3 +13,7 @@ target
 # Database
 
 university.db
+
+# Log
+
+audit.txt
