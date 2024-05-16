@@ -43,6 +43,7 @@ public class PersistenceService {
     }
     public void beginSaveSession() throws SQLException {
         beginSession();
+        resetDatabase();
         saveSession = true;
     }
     public void endSession() throws SQLException {
@@ -127,7 +128,7 @@ public class PersistenceService {
             s.execute("DROP TABLE IF EXISTS classrooms");
             s.execute("DROP TABLE IF EXISTS courses");
             s.execute("DROP TABLE IF EXISTS exams");
-            s.execute("CREATE TABLE grants (id INT PRIMARY KEY, name TEXT, amount INT)");
+            s.execute("CREATE TABLE grants (id INT PRIMARY KEY, description TEXT, amount INT)");
             s.execute("CREATE TABLE students (id INT PRIMARY KEY, name TEXT, birth_day DATE, emergency_phone_contact TEXT, grant INT)");
             s.execute("CREATE TABLE teachers (id INT PRIMARY KEY, name TEXT, birth_day DATE, salary INT)");
             s.execute("CREATE TABLE fail_grades (id INT PRIMARY KEY, student INT, course INT, grade TEXT)");
@@ -139,7 +140,7 @@ public class PersistenceService {
     }
     public void saveGrant(Grant grant) throws SQLException {
         addObj(grant);
-        exec("INSERT INTO grants (id, name, amount) VALUES (?, ?, ?)", getKey(grant), grant.getAmountInCents(), grant.getDescription());
+        exec("INSERT INTO grants (id, description, amount) VALUES (?, ?, ?)", getKey(grant), grant.getDescription(), grant.getAmountInCents());
     }
     public void saveStudent(Student student) throws SQLException {
         addObj(student);
@@ -181,7 +182,7 @@ public class PersistenceService {
         exec("INSERT INTO exams (id, name, course) VALUES (?, ?, ?, ?, ?, ?)", getKey(exam), exam.getName(), getKey(exam.getCourse()), exam.getTotalGrades(), exam.getGradesSum(), exam.getFails());
     }
     public List<Grant> loadGrants() throws SQLException {
-        return addingQuery("SELECT id, name, amount FROM grants", rs -> new Grant(rs.getInt("amount"), rs.getString("name")));
+        return addingQuery("SELECT id, description, amount FROM grants", rs -> new Grant(rs.getInt("amount"), rs.getString("description")));
     }
     public List<Student> loadStudents() throws SQLException {
         return addingQuery("SELECT id, name, birth_day, emergency_phone_contact, grant FROM students", rs -> {

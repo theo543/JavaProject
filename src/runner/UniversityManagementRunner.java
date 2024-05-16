@@ -264,6 +264,9 @@ public class UniversityManagementRunner {
         try {
             persistenceService.beginSaveSession();
             for (Student student : uniService.getAllStudents()) {
+                if(student.getGrant() != null) {
+                    persistenceService.saveGrant(student.getGrant());
+                }
                 persistenceService.saveStudent(student);
             }
             for (Teacher teacher : uniService.getAllTeachers()) {
@@ -284,6 +287,11 @@ public class UniversityManagementRunner {
             persistenceService.endSession();
         } catch (SQLException e) {
             System.out.println("An error occurred while saving data: " + e.getMessage());
+            try {
+                persistenceService.endSession();
+            } catch (Exception e2) {
+                System.out.println("Error ending session: " + e2);
+            }
         }
     }
     private void fetchRemoteData() {
@@ -294,6 +302,7 @@ public class UniversityManagementRunner {
         try {
             persistenceService.beginLoadSession();
             uniService.eraseAllData();
+            persistenceService.loadGrants();
             for (Student student : persistenceService.loadStudents()) {
                 uniService.addStudent(student);
             }
@@ -313,10 +322,15 @@ public class UniversityManagementRunner {
                 uniService.addExamToCourse(exam.getCourse(), exam.getName());
             }
             persistenceService.endSession();
-        } catch (SQLException | IllegalArgumentException | IllegalStateException | ClassCastException e) {
+        } catch (SQLException | ClassCastException e) {
             System.out.println("An error occurred while fetching data: " + e.getMessage());
             if (e instanceof ClassCastException) {
                 System.out.println("The data might be corrupted or incompatible.");
+            }
+            try {
+                persistenceService.endSession();
+            } catch (Exception e2) {
+                System.out.println("Error ending session: " + e2);
             }
         }
     }
