@@ -8,4 +8,8 @@
 # Build files
 
 out
+target
 
+# Database
+
+university.db
