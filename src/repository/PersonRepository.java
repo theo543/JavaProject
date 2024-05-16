@@ -34,4 +34,7 @@ public class PersonRepository {
         newPersons[persons.length] = person;
         persons = newPersons;
     }
+    public void eraseAllData() {
+        persons = new Person[0];
+    }
 }

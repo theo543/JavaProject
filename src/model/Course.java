@@ -11,14 +11,17 @@ public class Course {
     private int gradeCount;
     private int failCount;
     private int examCount;
-    public Course(Teacher teacher, String name, Classroom classroom) {
+    public Course(Teacher teacher, String name, Classroom classroom, double gradeSum, int gradeCount, int failCount, int examCount) {
         this.teacher = Objects.requireNonNull(teacher);
         this.name = Objects.requireNonNull(name);
         this.classroom = Objects.requireNonNull(classroom);
-        this.gradeSum = 0;
-        this.gradeCount = 0;
-        this.failCount = 0;
-        this.examCount = 0;
+        this.gradeSum = gradeSum;
+        this.gradeCount = gradeCount;
+        this.failCount = failCount;
+        this.examCount = examCount;
+    }
+    public Course(Teacher teacher, String name, Classroom classroom) {
+        this(teacher, name, classroom, 0, 0, 0, 0);
     }
     public Teacher getTeacher() {
         return teacher;
@@ -51,5 +54,17 @@ public class Course {
     }
     public CourseStats getStats() {
         return new CourseStats(gradeCount, examCount, gradeSum / gradeCount, failCount);
+    }
+    public int getGradeCount() {
+        return gradeCount;
+    }
+    public int getExamCount() {
+        return examCount;
+    }
+    public double getGradeSum() {
+        return gradeSum;
+    }
+    public int getFailCount() {
+        return failCount;
     }
 }

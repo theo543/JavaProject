@@ -64,4 +64,9 @@ public class SchoolRepository {
     public List<Classroom> getAllClassrooms() {
         return List.of(classrooms);
     }
+    public void eraseAllData() {
+        courses = new Course[0];
+        exams = new Exam[0];
+        classrooms = new Classroom[0];
+    }
 }

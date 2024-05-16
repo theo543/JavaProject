@@ -89,4 +89,12 @@ public class UniversityService {
     public List<Exam> getAllExams() {
         return schoolRepository.getAllExams();
     }
+    public List<Grade> getAllGrades() {
+        return gradeBook.getAllGrades();
+    }
+    public void eraseAllData() {
+        schoolRepository.eraseAllData();
+        gradeBook.eraseAllData();
+        personRepository.eraseAllData();
+    }
 }

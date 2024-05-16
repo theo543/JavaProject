@@ -75,4 +75,10 @@ public class GradeBook {
     public List<Grade> lookupGrades(Student student) {
         return lookupGrades(student, null);
     }
+    public List<Grade> getAllGrades() {
+        return List.of(grades);
+    }
+    public void eraseAllData() {
+        grades = new Grade[0];
+    }
 }

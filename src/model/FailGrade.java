@@ -22,4 +22,8 @@ public class FailGrade extends Grade {
                 ", exam: " + getExam().getName() +
                 " (considered as 0/10)";
     }
+
+    public FailCause getCause() {
+        return cause;
+    }
 }

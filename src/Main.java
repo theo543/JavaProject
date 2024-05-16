@@ -10,7 +10,7 @@ public class Main {
         var schoolRepository = new SchoolRepository();
         var gradeBook = new GradeBook();
         var uniService = new UniversityService(personRepository, schoolRepository, gradeBook);
-        var runner = new UniversityManagementRunner(uniService);
+        var runner = new UniversityManagementRunner(uniService, null);
         runner.loop();
         System.out.println("Goodbye!");
     }

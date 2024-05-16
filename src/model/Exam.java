@@ -6,12 +6,15 @@ public class Exam {
     private int totalGrades;
     private double gradesSum;
     private int fails;
-    public Exam(String name, Course course) {
+    public Exam(String name, Course course, int totalGrades, double gradesSum, int fails) {
         this.name = name;
         this.course = course;
-        this.totalGrades = 0;
-        this.gradesSum = 0;
-        this.fails = 0;
+        this.totalGrades = totalGrades;
+        this.gradesSum = gradesSum;
+        this.fails = fails;
+    }
+    public Exam(String name, Course course) {
+        this(name, course, 0, 0, 0);
     }
     public String getName() {
         return name;
@@ -31,5 +34,14 @@ public class Exam {
     }
     public ExamStats getStats() {
         return new ExamStats(totalGrades, gradesSum / totalGrades, fails);
+    }
+    public int getTotalGrades() {
+        return totalGrades;
+    }
+    public double getGradesSum() {
+        return gradesSum;
+    }
+    public int getFails() {
+        return fails;
     }
 }

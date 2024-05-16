@@ -2,9 +2,11 @@ package runner;
 
 import model.*;
 
+import service.PersistenceService;
 import service.ScannerService;
 import service.UniversityService;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class UniversityManagementRunner {
@@ -21,9 +23,11 @@ public class UniversityManagementRunner {
         }
     }
     private final UniversityService uniService;
+    private final PersistenceService persistenceService;
     private final Command[] supportedCommands;
-    public UniversityManagementRunner(UniversityService uniService) {
+    public UniversityManagementRunner(UniversityService uniService, PersistenceService persistenceService) {
         this.uniService = Objects.requireNonNull(uniService);
+        this.persistenceService = persistenceService;
         this.supportedCommands = new Command[] {
                 new Command("Add a student", this::addStudent),
                 new Command("Add a teacher", this::addTeacher),
@@ -36,6 +40,8 @@ public class UniversityManagementRunner {
                 new Command("Query report card", this::queryReportCard),
                 new Command("Query exam stats", this::queryExamStats),
                 new Command("Query course stats", this::queryCourseStats),
+                new Command("Save all data (will overwrite existing data)", this::saveAllData),
+                new Command("Fetch remote data (will overwrite existing data)", this::fetchRemoteData),
                 new Command("Exit", null)
         };
     }
@@ -249,5 +255,69 @@ public class UniversityManagementRunner {
         Course course = promptCourse();
         System.out.println("Statistics for " + course + ":");
         System.out.println(course.getStats());
+    }
+    private void saveAllData() {
+        if (persistenceService == null) {
+            System.out.println("No database service available.");
+            return;
+        }
+        try {
+            persistenceService.beginSaveSession();
+            for (Student student : uniService.getAllStudents()) {
+                persistenceService.saveStudent(student);
+            }
+            for (Teacher teacher : uniService.getAllTeachers()) {
+                persistenceService.saveTeacher(teacher);
+            }
+            for (Grade grade : uniService.getAllGrades()) {
+                persistenceService.saveGrade(grade);
+            }
+            for (Classroom classroom : uniService.getAllClassrooms()) {
+                persistenceService.saveClassroom(classroom);
+            }
+            for (Course course : uniService.getAllCourses()) {
+                persistenceService.saveCourse(course);
+            }
+            for (Exam exam : uniService.getAllExams()) {
+                persistenceService.saveExam(exam);
+            }
+            persistenceService.endSession();
+        } catch (SQLException e) {
+            System.out.println("An error occurred while saving data: " + e.getMessage());
+        }
+    }
+    private void fetchRemoteData() {
+        if (persistenceService == null) {
+            System.out.println("No database service available.");
+            return;
+        }
+        try {
+            persistenceService.beginLoadSession();
+            uniService.eraseAllData();
+            for (Student student : persistenceService.loadStudents()) {
+                uniService.addStudent(student);
+            }
+            for (Teacher teacher : persistenceService.loadTeachers()) {
+                uniService.addTeacher(teacher);
+            }
+            for (FailGrade grade : persistenceService.loadFailGrades()) {
+                uniService.addFail(grade.getStudent(), grade.getExam(), grade.getCause());
+            }
+            for (Classroom classroom : persistenceService.loadClassrooms()) {
+                uniService.addClassroom(classroom);
+            }
+            for (Course course : persistenceService.loadCourses()) {
+                uniService.addCourse(course);
+            }
+            for (Exam exam : persistenceService.loadExams()) {
+                uniService.addExamToCourse(exam.getCourse(), exam.getName());
+            }
+            persistenceService.endSession();
+        } catch (SQLException | IllegalArgumentException | IllegalStateException | ClassCastException e) {
+            System.out.println("An error occurred while fetching data: " + e.getMessage());
+            if (e instanceof ClassCastException) {
+                System.out.println("The data might be corrupted or incompatible.");
+            }
+        }
     }
 }
